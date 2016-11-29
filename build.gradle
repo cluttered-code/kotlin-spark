@@ -1,18 +1,28 @@
-group 'com.clutteredcode'
-version '1.0.0-SNAPSHOT'
-
 buildscript {
-    ext.kotlin_version = '1.0.5'
-
+    ext.kotlinVersion = '1.0.5-2'
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
 }
 
+plugins {
+    id 'com.github.johnrengelman.shadow' version '1.2.4'
+}
+
+group 'com.clutteredcode'
+version '1.0.0-SNAPSHOT'
+
+apply plugin: 'idea'
 apply plugin: 'kotlin'
+apply plugin: 'application'
+
+mainClassName = 'com.clutteredcode.api.ApiServerKt'
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
     mavenLocal()
@@ -20,17 +30,27 @@ repositories {
 }
 
 ext {
-    gradle_version = '3.2.1'
-
     sparkVersion = '2.5.3'
+    slf4jVersion = '1.7.21'
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    compile "org.slf4j:slf4j-ext:$slf4jVersion"
+    compile "org.slf4j:slf4j-simple:$slf4jVersion"
 
-    compile "com.sparkjava:spark-core:$sparkVersion"
+    compile("com.sparkjava:spark-core:$sparkVersion") {
+        exclude group: 'org.slf4j'
+    }
+
+    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
+}
+
+shadowJar {
+    classifier = ''
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = gradle_version
+    gradleVersion = '3.2.1'
 }
