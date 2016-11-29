@@ -1,5 +1,7 @@
+@file:JvmName("ApiServer")
 package com.clutteredcode.api
 
+import com.clutteredcode.api.controller.PingController
 import spark.Spark.get
 
 /**
@@ -7,5 +9,6 @@ import spark.Spark.get
  */
 
 fun main(args : Array<String>) {
-    get("/ping", { request, response -> "pong" })
+    val pingController : PingController = PingController()
+    get("/ping", { request, response -> pingController.handle(request, response) })
 }
